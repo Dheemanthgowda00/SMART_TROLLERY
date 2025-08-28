@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Trolley Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        h1 { color: #333; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #cart { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Smart Trolley Dashboard</h1>
+    <p>Current Mode: <span id="mode">Loading...</span></p>
+    <button onclick="toggleMode()">Toggle Mode</button>
+
+    <div id="cart">
+        <h2>Cart</h2>
+        <pre id="cartContent">Loading...</pre>
+    </div>
+
+    <script>
+        function updateStatus() {
+            fetch('/status')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('mode').innerText = data.mode;
+                document.getElementById('cartContent').innerText = JSON.stringify(data, null, 2);
+            });
+        }
+
+        function toggleMode() {
+            fetch('/toggle', {method: 'POST'})
+            .then(updateStatus);
+        }
+
+        setInterval(updateStatus, 1000);
+        updateStatus();
+    </script>
+</body>
+</html>
